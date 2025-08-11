@@ -178,10 +178,11 @@
     table.cell(colspan: 2)[],
 
     [#text(size: 2em, fill: aqua, stroke: black)[#"\u{f115d}"]], [10yr],
-    [#text(size: 2em, fill: yellow, stroke: red)[#"\u{ef82}"]], [11yr],
+    [#text(size: 2em, fill: white, stroke: gray)[#"\u{f0b7c}"]], [11yr],
 
     table.cell(colspan: 2)[],
     table.cell(colspan: 2, align: left)[
+      #text(size: 2em, fill: rgb(78,100,37))[#"\u{ed61}"] #sym.space
       #text(size: 2em, fill: rgb(78,100,37))[#"\u{f15c7}"] #sym.space
       #text(size: 2em, fill: rgb(78,100,37))[#"\u{f0508}"] #sym.space
       #text(size: 2em, fill: rgb(78,100,37))[#"\u{f00a3}"] #sym.space
@@ -415,19 +416,19 @@ Output written on bnl-20101103-1.pdf.
   table.cell(fill: rgb(200, 200, 200))[#strong[C++ Equivalent(s)]],
   table.cell(fill: rgb(200, 200, 200))[#strong[Description]],
 
-
-  [`cargo build`], [`make`/`ninja`], [compile w/ deps],
-  [`cargo run`], [`make run`/scripts], [build and run],
-  [`cargo test`], [`ctest`/`googletest`/`catch2`], [Compiles and tests],
-  [`cargo doc`], [`doxygen`/`Sphinx`], [documentation],
+  [`Cargo.toml`], [`CMakeLists.txt` / `conanfile.py`], [dependencies, settings, metadata],
+  [`cargo build`], [`make` / `ninja`], [compile w/ dependencies],
+  [`cargo run`], [`make run` / _scripts_], [build and run],
+  [`cargo test`], [`ctest` / `googletest`], [compiles and tests],
+  [`cargo doc`], [`doxygen` / `sphinx`], [documentation],
   [`cargo fmt`], [`clang-format`], [reformat code],
-  [`cargo clippy`], [`cppcheck`/`clang-tidy`], [lints/static analysis],
-  [`Cargo.toml`], [`CMakeLists.txt`/`conanfile.py`], [dependencies, settings, metadata],
-  [`cargo new`], [`conan new`, scripts], [new project],
+  [`cargo clippy`], [`cppcheck` / `clang-tidy`], [lints/static analysis],
+  [`cargo new`], [`conan new` / _scripts_], [new project],
   [`cargo add`], [`conan install`], [add dependencies],
   [`cargo publish`], [`conan create`], [publishes to registry],
 )
 
+_It's a joy to work with_
 
 == registry
 
@@ -471,7 +472,7 @@ TODO: ...
 
 = Features
 
-== foo
+== matching
 
 foo
 
