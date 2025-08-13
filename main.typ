@@ -341,7 +341,7 @@ Output written on bnl-20101103-1.pdf.
       let s2 = s1;
       // Ownership is moved to s2
 
-      // println!("{}", s1);
+      println!("{}", s1);
       // Error! s1 no longer owns the value
 
       let s3 = String::from("world");
@@ -375,7 +375,7 @@ Output written on bnl-20101103-1.pdf.
         thief(s);
 
         // this will not compile...
-        println!("before: {}", s);
+        println!("after: {}", s);
     }
     ```
   ])
@@ -393,7 +393,7 @@ Output written on bnl-20101103-1.pdf.
     || 11 |     thief(s);
     ||    |           - value moved here
     || ...
-    || 13 |     println!("before: {}", s);
+    || 13 |     println!("after: {}", s);
     ||    |                            ^ value borrowed here
     ||    |                              after move
     ```
@@ -432,7 +432,9 @@ _It's a joy to work with_
 
 == registry
 
-TODO: how to find modules
+#align(center + horizon,
+image("images/crates.io.png", width: auto)
+)
 
 // ------------------------- comparison -------------------------
 
