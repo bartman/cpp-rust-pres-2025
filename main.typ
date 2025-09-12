@@ -668,7 +668,7 @@ image("images/crates.io.png", width: auto)
     ```
   ])
 
-  This makes Jason Turner unhappy.
+  Jason Turner is not a fan of implicit conversions.
   #image("images/implicit-evil.png", width: 100%)
 
   #colbreak()
