@@ -52,6 +52,9 @@
 
 #show raw: set text(fill: rgb(0,92,0))
 
+#let cpp_logo = [#align(left)[#text(size: 2em, fill: blue)[#"\u{e61d}"]]#v(-2.0em)]
+#let rust_logo = [#align(left)[#text(size: 2em, fill: rgb(206,66,43))[#"\u{e7a8}"]]#v(-2.0em)]
+
 // ------------------------- title -------------------------
 
 #title-slide()
@@ -75,7 +78,7 @@
     ],
     table.cell(colspan: 2)[],
 
-    [#text(size: 2em)[#"\u{f17c}"]], [29yr],
+    [#text(size: 2em)[#"\u{f17c}"]], [30yr],
     [#text(size: 2em, stroke: red)[#"\u{e77d}"]],   [20yr],
     [#text(size: 2em, stroke: blue)[#"\u{e843}"]],  [$1/2$yr],
   )
@@ -157,7 +160,7 @@ it's 2010
 
 unrelated
 - switched from `bash` to `zsh`
-- wanted to learn it better
+- wanted to learn `zsh` better
 
 #ad.idea[
   write an invoicing app in `zsh`
@@ -165,15 +168,15 @@ unrelated
 
 == clinvoice <touying:hidden>
 
-  #codeblock(color: green, [
-```
-❯ cli generate -t pdf -s 1 201011
-...
-Output written on bnl-20101103-1.pdf.
-```
-])
-
 #columns(2)[
+
+  #codeblock(color: green, [
+    ```
+    ❯ cli generate -t pdf -s 1 201011
+    ...
+    Output written on bnl-20101103-1.pdf.
+    ```
+  ])
 
   #codeblock(color: yellow, [
     ```
@@ -196,13 +199,15 @@ Output written on bnl-20101103-1.pdf.
   #colbreak()
 
   #codeblock(width: auto, [
-    #image("images/invoice-1.png", width: 80%)
+    #image("images/invoice-1.png", width: 90%)
   ])
 ]
 
 == clinvoice <touying:hidden>
 
-- \~500 lines of zsh
+  https://github.com/bartman/clinvoice-zsh
+
+- \~500 lines of `zsh`
 - bill clients for 15 years
 - about 300 invoices generated
 - works, but I never want to touch it again
@@ -412,93 +417,998 @@ image("images/crates.io.png", width: auto)
 
 == defaults
 
-- TODO: static vs pub
-- TODO: const vs mut
-- TODO: return optional, if no semicolon
+#columns(2)[
+  #cpp_logo
+  #codeblock(width: auto, [
+    ```cpp
+    // private to this file
+    static void private_function() {}
 
-== integers
+    // exported by default
+    void public_function() {}
+    ```
+  ])
 
-- standard types `u32;`
-- type suffixes, like `1f32`;
+  #colbreak()
+  #rust_logo
+  #codeblock(width: auto, [
+    ```rust
+    // private by default
+    fn private_function() {}
+
+    // public
+    pub fn public_function() {}
+    ```
+  ])
+]
+
+== defaults <touying:hidden>
+
+#columns(2)[
+  #cpp_logo
+  #codeblock(width: auto, [
+    ```cpp
+    // immutable
+    const int y = 5;
+    y = 6; // error
+
+    // mutable by default
+    int x = 5;
+    x = 6;
+    ```
+  ])
+
+  #colbreak()
+  #rust_logo
+  #codeblock(width: auto, [
+    ```rust
+    // immutable by default
+    let y = 5;
+    y = 6; // error
+
+    // mutable
+    let mut x = 5;
+    x = 6;
+    ```
+  ])
+]
+
+== defaults <touying:hidden>
+
+#columns(2)[
+  #cpp_logo
+  #codeblock(width: auto, [
+    ```cpp
+    int add(int a, int b) {
+      return a + b;
+    }
+    ```
+  ])
+
+  #colbreak()
+  #rust_logo
+  #codeblock(width: auto, [
+    ```rust
+    fn add1(a: i32, b: i32) -> i32 {
+      return a + b;
+    }
+
+    fn add2(a: i32, b: i32) -> i32 {
+      a + b // no semicolon
+    }
+    ```
+  ])
+]
+
+
+== numerical types
+
+#columns(2)[
+  #cpp_logo
+  #codeblock(width: auto, [
+    ```cpp
+    #include <cstdint>
+
+    uint8_t  a = 1;
+    uint16_t b = 2;
+    uint32_t c = 3;
+    uint64_t d = 4;
+
+    float  f = 1.0f;
+    double g = 2.0;
+    ```
+  ])
+
+  #colbreak()
+  #rust_logo
+  #codeblock(width: auto, [
+    ```rust
+    // language defined types
+
+    let a: u8  = 1;
+    let b: u16 = 2;
+    let c: u32 = 3;
+    let d: u64 = 4;
+
+    let f: f32 = 1.0;
+    let g: f64 = 2.0;
+    ```
+  ])
+]
+
+== numerical types <touying:hidden>
+
+#columns(2)[
+  #cpp_logo
+  #codeblock(width: auto, [
+    ```cpp
+    auto a = 1;   // int
+    auto b = 1U;  // unsigned int
+    auto c = 1L;  // long
+    auto d = 1UL; // unsigned long
+    auto e = 1LL; // long long
+
+    auto f = 1.0f; // float
+    auto g = 1.0;  // double
+
+    auto z = 1z; // size_t (c++23)
+    ```
+  ])
+
+  #colbreak()
+  #rust_logo
+  #codeblock(width: auto, [
+    ```rust
+    let a = 1;   // i32
+    let b = 1u32;
+    let c = 1i64;
+
+    let d = 1.0; // f64
+    let e = 1.0f32;
+
+    let z = 1usize;
+    ```
+  ])
+]
 
 == casting
 
-- TODO: rust: `let v = sqrt(n) as u32;`
+#columns(2)[
+  #cpp_logo
+  #codeblock(width: auto, [
+    ```cpp
+    //  Primitive casting
+    int a = (int)3.14;
+    int b = static_cast<int>(3.14);
+
+    // Unsafe reinterpreting
+    float f = 3.14;
+    int* p = reinterpret_cast<int*>(&f);
+    ```
+  ])
+
+  #colbreak()
+  #rust_logo
+  #codeblock(width: auto, [
+    ```rust
+    // Primitive casting
+    let a = 3.14 as i32;
+
+
+    // Unsafe reinterpreting
+    let f = 3.14f32;
+    let p: *const i32 = unsafe {
+      std::mem::transmute(&f)
+    };
+    ```
+  ])
+]
 
 == loops
 
-- TODO: rust: `for i in first..=last { }`
+#columns(2)[
+  #cpp_logo
+  #codeblock(width: auto, [
+    ```cpp
+    for (auto i = 0; i < 10; i++) {
+      // ...
+    }
+
+    for (auto i = 0; i < 10; i += 2) {
+      // ...
+    }
+    ```
+  ])
+
+  #colbreak()
+  #rust_logo
+  #codeblock(width: auto, [
+    ```rust
+    for i in 0..10 {
+      // ...
+    }
+
+    for i in (0..10).step_by(2) {
+      // ...
+    }
+    ```
+  ])
+]
 
 == strings
 
-- TODO: `const char *`
+#columns(2)[
+  #cpp_logo
+  #codeblock(width: auto, [
+    ```cpp
+    // just a sequence of bytes
+    const char* s1 = "Hello";
+    auto s2 = u8"HΣllo, Wörld!";
+    ```
+  ])
+
+  #colbreak()
+  #rust_logo
+  #codeblock(width: auto, [
+    ```rust
+    // enforced valid UTF-8 strings
+    let s1 = "Hello";
+    let s2: &str = "HΣllo, Wörld!";
+    ```
+  ])
+]
 
 == strings <touying:hidden>
 
-- TODO: `std::string`
+#columns(2)[
+  #cpp_logo
+  #codeblock(width: auto, [
+    ```cpp
+    #include <string>
+    #include <iostream>
+
+    void main() {
+      std::string s1 = "Hello";
+
+      // contents of s1 are copied
+      std::string s2 = s1 + ", World";
+      s2.append("!");
+
+      std::cout << s1; // s1 is still valid
+    }
+    ```
+  ])
+
+  #colbreak()
+  #rust_logo
+  #codeblock(width: auto, [
+    ```rust
+    fn main() {
+      let s1 = String::from("Hello");
+      // s1 is moved and no longer valid
+      let s2 = s1 + ", World";
+
+      // The following line would fail
+      // println!("{}", s1);
+
+      // A mutable string
+      let mut s3 = String::from("Hello");
+      s3.push_str(", World!");
+    }
+    ```
+  ])
+]
 
 == strings <touying:hidden>
 
-- TODO: `std::string_view`
+#columns(2)[
+  #cpp_logo
+  #codeblock(width: auto, [
+    ```cpp
+    #include <string_view>
 
-== ownership and borrowing
+    void main() {
+      const char* s = "Hello, World!";
+      auto sv = std::string_view{s};
 
-- TODO: unique_ptr vs Box
-- TODO: shared_ptr vs Rc/Arc (single/multi-threaded)
+      // Modify the view
+      sv.remove_prefix(7);
+      // sv is now "World!"
+    }
+    ```
+  ])
 
-== containers
+  #colbreak()
+  #rust_logo
+  #codeblock(width: auto, [
+    ```rust
+    fn main() {
+      let s = "Hello, World!";
+      // s is a &str, a string slice
 
-- TODO: vec vs array
-- TODO: iterators
-
-- `v1 = vec![]; v2 = v1.clone()`
-
-== OOO
-
-- TODO: class vs struct/impl
-
-== polymorphism
-
-- pure virtual interfaces vs traits
-- inheritance vs trait inheritance
-
-== templates/generics
-
-- meta programming
-- c++ ducktyping w/ concepts
-
-- TODO: ...
-
-== enums
-
-== unions
-
-- typed enumerations
+      // Create a slice of s
+      let sv = &s[7..];
+      // sv is "World!"
+    }
+    ```
+  ])
+]
 
 == ownership
 
-- c++
+#columns(2)[
+  #cpp_logo
   - single owner or shared ownership
   - dev managed
   - copy by default, move explicitly
-- rust
+
+  #colbreak()
+  #rust_logo
   - single owner
   - borrow checker
   - move/borrow ownership by default, copy explicitly
+  ]
+
+== ownership
+
+#columns(2)[
+  #cpp_logo
+  #codeblock(width: auto, [
+    ```cpp
+    #include <memory>
+
+    void main() {
+      // Unique ownership
+      auto p1 = std::make_unique<int>(5);
+      // Transfer ownership
+      auto p2 = std::move(p1);
+      // p1 is now nullptr
+    }
+    ```
+  ])
+
+  #colbreak()
+  #rust_logo
+  #codeblock(width: auto, [
+    ```rust
+    fn main() {
+      // Unique ownership
+      let b1 = Box::new(5);
+      // Transfer ownership
+      let b2 = b1;
+      // b1 is moved and cannot be used
+    }
+    ```
+  ])
+]
+
+== ownership <touying:hidden>
+
+#columns(2)[
+  #cpp_logo
+  #codeblock(width: auto, [
+    ```cpp
+    #include <memory>
+
+    void main() {
+      // Shared ownership
+      auto sp1 = std::make_shared<int>(5);
+      // Create another reference
+      auto sp2 = sp1;
+      // Ref count is 2
+    }
+    ```
+  ])
+
+  #colbreak()
+  #rust_logo
+  #codeblock(width: auto, [
+    ```rust
+    use std::rc::Rc;
+
+    fn main() {
+      // Shared ownership (not thread-safe)
+      let rc1 = Rc::new(5);
+      // Create another reference
+      let rc2 = Rc::clone(&rc1);
+      // Ref count is 2
+    }
+    ```
+  ])
+]
+
+== ownership <touying:hidden>
+
+#columns(2)[
+  #cpp_logo
+  #codeblock(width: auto, [
+    ```cpp
+    #include <memory>
+    #include <thread>
+    #include <atomic>
+
+    void main() {
+      auto sp = std::make_shared<std::atomic<int>>(5);
+      std::thread t([sp]() {
+        sp->fetch_add(1);
+      });
+      t.join();
+      // sp->load() is 6
+    }
+    ```
+  ])
+
+  #colbreak()
+  #rust_logo
+  #codeblock(width: auto, size: 0.8em, [
+    ```rust
+    use std::sync::Arc;
+    use std::sync::atomic::AtomicI32;
+    use std::sync::atomic::Ordering;
+    use std::thread;
+
+    fn main() {
+      let arc = Arc::new(Mutex::new(0));
+      let arc2 = Arc::clone(&arc);
+      let handle = thread::spawn(move || {
+        arc2.fetch_add(1, Ordering::SeqCst);
+      });
+      handle.join().unwrap();
+      // arc.load(Ordering::SeqCst) is 6
+    }
+    ```
+  ])
+]
+
+== containers
+
+#columns(2)[
+  #cpp_logo
+  #codeblock(width: auto, [
+    ```cpp
+    #include <array>
+    #include <vector>
+
+    // Fixed-size array
+    std::array<int, 3> a = {1, 2, 3};
+
+    // Dynamic array
+    std::vector<int> v = {1, 2, 3};
+    v.push_back(4);
+    ```
+  ])
+
+  #colbreak()
+  #rust_logo
+  #codeblock(width: auto, [
+    ```rust
+    // Fixed-size array
+    let a: [i32; 3] = [1, 2, 3];
+
+    // Dynamic array
+    let mut v = vec![1, 2, 3];
+    v.push(4);
+    ```
+  ])
+]
+
+== containers <touying:hidden>
+
+#columns(2)[
+  #cpp_logo
+  #codeblock(width: auto, [
+    ```cpp
+    #include <vector>
+
+    std::vector<int> v1 = {1, 2, 3};
+    // Deep copy by assignment
+    std::vector<int> v2 = v1;
+    ```
+  ])
+
+  #colbreak()
+  #rust_logo
+  #codeblock(width: auto, [
+    ```rust
+    let v1 = vec![1, 2, 3];
+    // Explicit deep copy
+    let v2 = v1.clone();
+    ```
+  ])
+]
+
+== iterators
+
+#columns(2)[
+  #cpp_logo
+  #codeblock(width: auto, [
+    ```cpp
+    #include <vector>
+    #include <numeric>
+
+    std::vector<int> v = {1, 2, 3};
+
+    // Manual sum
+    int sum1 = 0;
+    for (int x : v) {
+      sum1 += x;
+    }
+
+    // Accumulate algorithm
+    int sum2 = std::accumulate(
+          v.begin(), v.end(), 0);
+    ```
+  ])
+
+  #colbreak()
+  #rust_logo
+  #codeblock(width: auto, [
+    ```rust
+    let v = vec![1, 2, 3];
+
+    // Manual sum
+    let mut sum1 = 0;
+    for x in &v {
+      sum1 += x;
+    }
+
+    // Accumulate algorithm
+    let sum2: i32 = v.iter().sum();
+    ```
+  ])
+]
+
+== OOO
+
+#columns(2)[
+  #cpp_logo
+  #codeblock(width: auto, [
+    ```cpp
+    class Point {
+    public:
+      float x, y;
+      explicit Point(float x, float y)
+        : x(x), y(y) {}
+    };
+
+    Point p(1.0, 2.0);
+    ```
+  ])
+
+  #colbreak()
+  #rust_logo
+  #codeblock(width: auto, [
+    ```rust
+    struct Point {
+      x: f32,
+      y: f32,
+    }
+
+    impl Point {
+      fn new(x: f32, y: f32) -> Self {
+        Self { x, y }
+      }
+    }
+
+    let p = Point::new(1.0, 2.0);
+    ```
+  ])
+]
+
+== polymorphism
+
+#columns(2)[
+  #cpp_logo
+  #codeblock(width: auto, [
+    ```cpp
+    #include <numbers> // std::numbers::pi
+
+    class Shape {
+    public:
+      virtual float area() const = 0;
+    };
+
+    class Circle : public Shape {
+    public:
+      float r;
+      Circle(float r) : r(r) {}
+      float area() const override {
+        return std::numbers::pi * r * r;
+      }
+    };
+    ```
+  ])
+
+  #colbreak()
+  #rust_logo
+  #codeblock(width: auto, [
+    ```rust
+    use std::f32::consts::PI;
+
+    trait Shape {
+      fn area(&self) -> f32;
+    }
+
+    struct Circle {
+      r: f32,
+    }
+
+    impl Shape for Circle {
+      fn area(&self) -> f32 {
+        PI * self.r * self.r
+      }
+    }
+    ```
+  ])
+]
+
+== templates/generics
+
+#columns(2)[
+  #cpp_logo
+  #codeblock(width: auto, [
+    ```cpp
+    // Works for any type `T` that
+    // has an `operator+`.
+    template<typename T>
+    T add(T a, T b) {
+      return a + b;
+    }
+
+    // C++20: Abbreviated function template
+    auto add2(auto a, auto b) {
+      return a + b;
+    }
+    ```
+  ])
+
+  #colbreak()
+  #rust_logo
+  #codeblock(width: auto, [
+    ```rust
+    use std::ops::Add;
+
+    // Explicitly constrained to types
+    // that implement the `Add` trait.
+    fn add<T: Add<Output = T>>(a: T, b: T) -> T {
+      a + b
+    }
+    ```
+  ])
+]
+
+== templates/generics <touying:hidden>
+
+#columns(2)[
+  #cpp_logo
+  #codeblock(width: auto, [
+    ```cpp
+    #include <iostream>
+
+    // C++20 Concepts
+    template<typename T>
+    concept Printable = requires(T t) {
+      { std::cout << t };
+    };
+
+    void print(Printable auto const& t) {
+      std::cout << t;
+    }
+    ```
+  ])
+
+  #colbreak()
+  #rust_logo
+  #codeblock(width: auto, [
+    ```rust
+    use std::fmt::Display;
+
+    // Trait Bounds (always required)
+    fn print<T: Display>(t: &T) {
+      println!("{}", t);
+    }
+    ```
+  ])
+]
+
+== enums
+
+#columns(2)[
+  #cpp_logo
+  #codeblock(width: auto, [
+    ```cpp
+    enum class Weekday {
+      Monday,
+      Tuesday,
+      Wednesday,
+      Thursday,
+      Friday,
+      Saturday,
+      Sunday,
+    };
+
+    auto day = Weekday::Monday;
+    ```
+  ])
+
+  #colbreak()
+  #rust_logo
+  #codeblock(width: auto, [
+    ```rust
+    enum Weekday {
+      Monday,
+      Tuesday,
+      Wednesday,
+      Thursday,
+      Friday,
+      Saturday,
+      Sunday,
+    }
+
+    let day = Weekday::Monday;
+    ```
+  ])
+]
+
+== enums <touying:hidden>
+
+#columns(2)[
+  #cpp_logo
+  #codeblock(width: auto, [
+    ```cpp
+    #include <variant>
+    #include <string>
+
+    struct Quit {};
+    struct Move { int x, y; };
+    struct Write { std::string text; };
+
+    using Message = std::variant<
+      Quit,
+      Move,
+      Write
+    >;
+
+    Message m1 = Move{10, 20};
+    Message m2 = Write{"hello"};
+    Message m3 = Quit{};
+    ```
+  ])
+
+  #colbreak()
+  #rust_logo
+  #codeblock(width: auto, [
+    ```rust
+    enum Message {
+      Quit,
+      Move { x: i32, y: i32 },
+      Write(String),
+    }
+
+    let m1 = Message::Move { x: 10, y: 20 };
+    let m2 = Message::Write(String::from("hello"));
+    let m3 = Message::Quit;
+    ```
+  ])
+]
+
+
 
 == concurrency
 
-- TODO: threads
+#columns(2)[
+  #cpp_logo
+  #codeblock(width: auto, [
+    ```cpp
+    int main() {
+      std::mutex m;
+      int counter = 0;
+
+      auto increment = [&]() {
+        std::lock_guard<std::mutex> lock(m);
+        counter++;
+      };
+
+      std::thread t1(increment);
+      std::thread t2(increment);
+      t1.join();
+      t2.join();
+      std::cout << counter; // 2
+      return 0;
+    }
+    ```
+  ])
+
+  #colbreak()
+  #rust_logo
+  #codeblock(width: auto, size: 0.8em, [
+    ```rust
+    fn increment_counter(counter: Arc<Mutex<i32>>) {
+      let mut num = counter.lock().unwrap();
+      *num += 1;
+    }
+
+    fn main() {
+      let counter = Arc::new(Mutex::new(0));
+      let clone1 = Arc::clone(&counter);
+      let clone2 = Arc::clone(&counter);
+
+      let handle1 = thread::spawn(move || {
+        increment_counter(clone1); });
+
+      let handle2 = thread::spawn(move || {
+        increment_counter(clone2); });
+
+      handle1.join().unwrap();
+      handle2.join().unwrap();
+
+      // *counter.lock().unwrap() is 2
+    }
+    ```
+  ])
+]
 
 == locking
 
-- TODO: c++ mutex disjoint from data
-- TODO: rust mutex lock().unwrap() to access data atomically
+#columns(2)[
+  #cpp_logo
+  - `std::mutex` is separate from data.
+  - Programmer ensures correct mutex is locked before data access.
+  - Manual usage of `std::lock_guard<>` on `std::mutex`
+
+  #colbreak()
+  #rust_logo
+  - `Mutex<T>` *owns* the data `T`.
+  - `lock().unwrap()` returns a `MutexGuard` to access data.
+  - `MutexGuard` ensures lock is held during data access and unlocks automatically.
+]
 
 == parameter passing
 
-- TODO: show passing by value, by move, by const reference, mutable reference
+#columns(2)[
+  #cpp_logo
+  #codeblock(width: auto, [
+    ```cpp
+    void pass_by_value(int x) {
+      x = 10; // Modifies local copy
+    }
 
+    int main() {
+      int a = 5;
+      pass_by_value(a);
+      // a is still 5
+    }
+    ```
+  ])
+
+  #colbreak()
+  #rust_logo
+  #codeblock(width: auto, [
+    ```rust
+    fn pass_by_value(mut x: i32) {
+      x = 10; // Modifies local copy
+    }
+
+    fn main() {
+      let a = 5;
+      pass_by_value(a);
+      // a is still 5
+    }
+    ```
+  ])
+]
+
+
+== parameter passing <touying:hidden>
+
+#columns(2)[
+  #cpp_logo
+  #codeblock(width: auto, [
+    ```cpp
+    void pass_const_ref(const int& x) {
+      // not allowed to modify x
+      std::println("Value: {}", x);
+    }
+
+    int main() {
+      int a = 5;
+      pass_const_ref(a);
+      // a is still 5
+    }
+    ```
+  ])
+
+  #colbreak()
+  #rust_logo
+  #codeblock(width: auto, [
+    ```rust
+    fn pass_const_ref(x: &i32) {
+      // not allowed to modify x
+      println!("Value: {}", x);
+    }
+
+    fn main() {
+      let a = 5;
+      pass_const_ref(&a);
+      // a is still 5
+    }
+    ```
+  ])
+]
+
+== parameter passing <touying:hidden>
+
+#columns(2)[
+  #cpp_logo
+  #codeblock(width: auto, [
+    ```cpp
+    void pass_by_mut_ref(int& x) {
+      x = 10; // Modifies original
+    }
+
+    int main() {
+      int a = 5;
+      pass_by_mut_ref(a);
+      // a is now 10
+    }
+    ```
+  ])
+
+  #colbreak()
+  #rust_logo
+  #codeblock(width: auto, [
+    ```rust
+    fn pass_by_mut_ref(x: &mut i32) {
+      *x = 10; // Modifies original
+    }
+
+    fn main() {
+      let mut a = 5;
+      pass_by_mut_ref(&mut a);
+      // a is now 10
+    }
+    ```
+  ])
+]
+
+== parameter passing <touying:hidden>
+
+#columns(2)[
+  #cpp_logo
+  #codeblock(width: auto, [
+    ```cpp
+    void pass_ownership(std::unique_ptr<int> x) {
+      std::cout << "Value in func: " << *x << std::endl;
+      // x now owns the data
+    }
+
+    int main() {
+      auto p = std::make_unique<int>(5);
+      pass_ownership(std::move(p));
+      // p is now nullptr (ownership transferred)
+      // std::cout << *p; // Error: p is nullptr
+    }
+    ```
+  ])
+
+  #colbreak()
+  #rust_logo
+  #codeblock(width: auto, [
+    ```rust
+    fn pass_ownership(x: String) {
+      println!("Value in func: {}", x);
+      // x now owns the String
+    }
+
+    fn main() {
+      let s = String::from("hello");
+      pass_ownership(s);
+      // s is moved and cannot be used here
+      // println!("{}", s); // Error: value borrowed here after move
+    }
+    ```
+  ])
+]
 
 // ------------------------- unique stuff -------------------------
 
@@ -506,27 +1416,100 @@ image("images/crates.io.png", width: auto)
 
 == pattern matching
 
-- TODO alternative to switch
-- TODO match typed enumerations
+#columns(2)[
+  #rust_logo
+  #codeblock(width: auto, size: 0.8em, [
+    ```rust
+    enum Message {
+      Quit,
+      Move { x: i32, y: i32 },
+      Write(String),
+      ChangeColor(i32, i32, i32),
+    }
+
+    fn process_message(msg: Message) {
+      match msg {
+        Message::Quit => {
+          println!("no data");
+        }
+        Message::Move { x, y } => {
+          println!("x={} y={}", x, y);
+        }
+        Message::Write(text) => {
+          println!("Text={}", text);
+        }
+        Message::ChangeColor(r, g, b) => {
+          println!("r,g,b={},{},{}", r, g, b);
+        }
+      }
+    }
+
+    fn main() {
+      let msg1 = Message::Move { x: 10, y: 20 };
+      process_message(msg1);
+      let msg2 = Message::Write(String::from("hello"));
+      process_message(msg2);
+    }
+    ```
+  ])
+]
 
 == attributes
 
-- TODO custom attributes vs traits
+#columns(2)[
+  #rust_logo
+  #codeblock(width: auto, [
+    ```rust
+    #[derive(Debug)]
+    struct Point {
+        x: i32,
+        y: i32,
+    }
+
+    fn main() {
+        let p = Point { x: 10, y: 20 };
+        println!("{:?}", p); // Prints: Point { x: 10, y: 20 }
+    }
+    ```
+  ])
+]
+
+== attributes <touying:hidden>
+
+#columns(2)[
+  #rust_logo
+  #codeblock(width: auto, [
+    ```cpp
+    #[test]
+    fn test_my_function_1_2_3() {
+        assert_eq!(my_function(1,2,3), 0);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_my_function_0_0_0() {
+        my_function(0,0,0);
+    }
+    ```
+  ])
+]
 
 // ------------------------- takeaways -------------------------
 
-= Takeaways
+= Closing
 
-== keep things short
+== clinvoice
 
-- keywords as short as possible (`fn`, `str`)
-- return is optional; last element is returned
+  https://github.com/bartman/clinvoice-rs
 
-== foo
+- \~2k lines of `rust` \
+  (4x the `zsh` version, but has more features, and it's easy on the eyes)
+- AI generated unit tests
 
-foo
+#ad.conclusion[
+  Rust is pretty nice, if you don't try to do anything fancy
+]
 
-== bar
+== Thank you
 
-bar
-
+Any questions?
