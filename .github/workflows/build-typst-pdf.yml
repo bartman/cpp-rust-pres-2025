@@ -13,7 +13,8 @@ jobs:
       - name: Install Fira Sans and Fira Math fonts
         run: |
           sudo apt-get update
-          sudo apt-get install -y fonts-fira fonts-firamath
+          sudo apt-get install -y fonts-firacode texlive-fonts-extra
+          sudo fc-cache -fv
 
       - name: Setup Typst
         uses: typst-community/setup-typst@v4
