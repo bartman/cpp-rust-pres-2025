@@ -166,7 +166,7 @@ unrelated
   write an invoicing app in `zsh`
 ]
 
-== clinvoice <touying:hidden>
+== clinvoice-zsh <touying:hidden>
 
 #columns(2)[
 
@@ -203,7 +203,7 @@ unrelated
   ])
 ]
 
-== clinvoice <touying:hidden>
+== clinvoice-zsh <touying:hidden>
 
   https://github.com/bartman/clinvoice-zsh
 
@@ -1498,7 +1498,7 @@ image("images/crates.io.png", width: auto)
 
 = Closing
 
-== clinvoice
+== clinvoice-rs
 
   https://github.com/bartman/clinvoice-rs
 
@@ -1510,6 +1510,6 @@ image("images/crates.io.png", width: auto)
   Rust is pretty nice, if you don't try to do anything fancy
 ]
 
-== Thank you
+== thank you
 
-Any questions?
+#text(size:2em)[Any questions?]
