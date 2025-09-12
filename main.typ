@@ -516,6 +516,8 @@ image("images/crates.io.png", width: auto)
 
     float  f = 1.0f;
     double g = 2.0;
+
+    bool   h = true;
     ```
   ])
 
@@ -532,6 +534,8 @@ image("images/crates.io.png", width: auto)
 
     let f: f32 = 1.0;
     let g: f64 = 2.0;
+
+    let h: bool = true;
     ```
   ])
 ]
@@ -571,6 +575,49 @@ image("images/crates.io.png", width: auto)
   ])
 ]
 
+== numerical types <touying:hidden>
+
+#columns(2)[
+  #cpp_logo
+  #codeblock(width: auto, size: 0.8em, [
+    ```cpp
+    // Overflow
+    unsigned char uc = 255;
+    uc = uc + 1; // Wraps around to 0
+
+    // Underflow
+    unsigned char uc2 = 0;
+    uc2 = uc2 - 1; // Wraps around to 255
+    ```
+  ])
+
+  #colbreak()
+  #rust_logo
+  #codeblock(width: auto, size: 0.8em, [
+    ```rust
+    // Overflow (panics in debug, wraps in release)
+    let mut uc: u8 = 255;
+    // uc = uc + 1; // Compile error: overflow
+
+    // Use checked_add for runtime error
+    match uc.checked_add(1) {
+        Some(val) => uc = val,
+        None => println!("Overflow detected"),
+    }
+
+    // Underflow (panics in debug, wraps in release)
+    let mut uc2: u8 = 0;
+    // uc2 = uc2 - 1; // Compile error: underflow
+
+    // Use checked_sub for runtime error
+    match uc2.checked_sub(1) {
+        Some(val) => uc2 = val,
+        None => println!("Underflow detected"),
+    }
+    ```
+  ])
+]
+
 == casting
 
 #columns(2)[
@@ -600,6 +647,44 @@ image("images/crates.io.png", width: auto)
     let p: *const i32 = unsafe {
       std::mem::transmute(&f)
     };
+    ```
+  ])
+]
+
+== casting <touying:hidden>
+
+#columns(2)[
+  #cpp_logo
+  #codeblock(width: auto, size: 0.8em, [
+    ```cpp
+    // Implicit promotion
+    int i = 10;
+    double d = 3.14;
+    auto result = i + d; // i is promoted to double
+
+    // Narrowing conversion (warning, but compiles)
+    int big_int = 1000;
+    char small_char = big_int; // Data loss
+    ```
+  ])
+
+  This makes Jason Turner unhappy.
+  #image("images/implicit-evil.png", width: 100%)
+
+  #colbreak()
+  #rust_logo
+  #codeblock(width: auto, size: 0.8em, [
+    ```rust
+    // Implicit promotion (type mismatch error)
+    let i: i32 = 10;
+    let d: f64 = 3.14;
+    // let result = i + d; // Compile error: cannot add `f64` to `i32`
+    let result = i as f64 + d; // Explicit cast required
+
+    // Narrowing conversion (explicit cast required)
+    let big_int: i32 = 1000;
+    // let small_char: u8 = big_int; // Compile error: mismatched types
+    let small_char: u8 = big_int as u8; // Explicit cast, potential data loss
     ```
   ])
 ]
@@ -664,11 +749,8 @@ image("images/crates.io.png", width: auto)
   #cpp_logo
   #codeblock(width: auto, [
     ```cpp
-    #include <string>
-    #include <iostream>
-
-    void main() {
-      std::string s1 = "Hello";
+    int main() {
+      std::string s1{"Hello"};
 
       // contents of s1 are copied
       std::string s2 = s1 + ", World";
@@ -705,9 +787,7 @@ image("images/crates.io.png", width: auto)
   #cpp_logo
   #codeblock(width: auto, [
     ```cpp
-    #include <string_view>
-
-    void main() {
+    int main() {
       const char* s = "Hello, World!";
       auto sv = std::string_view{s};
 
@@ -755,9 +835,7 @@ image("images/crates.io.png", width: auto)
   #cpp_logo
   #codeblock(width: auto, [
     ```cpp
-    #include <memory>
-
-    void main() {
+    int main() {
       // Unique ownership
       auto p1 = std::make_unique<int>(5);
       // Transfer ownership
@@ -790,7 +868,7 @@ image("images/crates.io.png", width: auto)
     ```cpp
     #include <memory>
 
-    void main() {
+    int main() {
       // Shared ownership
       auto sp1 = std::make_shared<int>(5);
       // Create another reference
@@ -827,7 +905,7 @@ image("images/crates.io.png", width: auto)
     #include <thread>
     #include <atomic>
 
-    void main() {
+    int main() {
       auto sp = std::make_shared<std::atomic<int>>(5);
       std::thread t([sp]() {
         sp->fetch_add(1);
@@ -848,7 +926,7 @@ image("images/crates.io.png", width: auto)
     use std::thread;
 
     fn main() {
-      let arc = Arc::new(Mutex::new(0));
+      let arc = Arc::new(AtomicI32::new(0));
       let arc2 = Arc::clone(&arc);
       let handle = thread::spawn(move || {
         arc2.fetch_add(1, Ordering::SeqCst);
@@ -962,13 +1040,19 @@ image("images/crates.io.png", width: auto)
 
 #columns(2)[
   #cpp_logo
-  #codeblock(width: auto, [
+  #codeblock(width: auto, size: 0.8em, [
     ```cpp
     class Point {
     public:
       float x, y;
       explicit Point(float x, float y)
         : x(x), y(y) {}
+
+      float distance(const Point& pt) const {
+        float dx = x - pt.x;
+        float dy = y - pt.y;
+        return std::sqrt(dx*dx + dy*dy);
+      }
     };
 
     Point p(1.0, 2.0);
@@ -977,7 +1061,7 @@ image("images/crates.io.png", width: auto)
 
   #colbreak()
   #rust_logo
-  #codeblock(width: auto, [
+  #codeblock(width: auto, size: 0.8em, [
     ```rust
     struct Point {
       x: f32,
@@ -987,6 +1071,12 @@ image("images/crates.io.png", width: auto)
     impl Point {
       fn new(x: f32, y: f32) -> Self {
         Self { x, y }
+      }
+
+      fn distance(&self, pt: &Point) -> f32 {
+        let dx = self.x - pt.x;
+        let dy = self.y - pt.y;
+        (dx*dx + dy*dy).sqrt()
       }
     }
 
@@ -1198,22 +1288,22 @@ image("images/crates.io.png", width: auto)
 
 #columns(2)[
   #cpp_logo
-  #codeblock(width: auto, [
+  #codeblock(width: auto, size: 0.8em, [
     ```cpp
     int main() {
-      std::mutex m;
-      int counter = 0;
+      std::mutex mtx;
+      std::string str;
 
       auto increment = [&]() {
-        std::lock_guard<std::mutex> lock(m);
-        counter++;
+        std::lock_guard<std::mutex> lock(mtx);
+        str += ".";
       };
 
       std::thread t1(increment);
       std::thread t2(increment);
       t1.join();
       t2.join();
-      std::cout << counter; // 2
+      std::cout << str; // ".."
       return 0;
     }
     ```
@@ -1223,15 +1313,15 @@ image("images/crates.io.png", width: auto)
   #rust_logo
   #codeblock(width: auto, size: 0.8em, [
     ```rust
-    fn increment_counter(counter: Arc<Mutex<i32>>) {
-      let mut num = counter.lock().unwrap();
-      *num += 1;
+    fn increment_counter(arc: Arc<Mutex<String>>) {
+      let mut str = arc.lock().unwrap();
+      *str += "."
     }
 
     fn main() {
-      let counter = Arc::new(Mutex::new(0));
-      let clone1 = Arc::clone(&counter);
-      let clone2 = Arc::clone(&counter);
+      let arc = Arc::new(Mutex::new(String::new()));
+      let clone1 = Arc::clone(&arc);
+      let clone2 = Arc::clone(&arc);
 
       let handle1 = thread::spawn(move || {
         increment_counter(clone1); });
@@ -1242,7 +1332,7 @@ image("images/crates.io.png", width: auto)
       handle1.join().unwrap();
       handle2.join().unwrap();
 
-      // *counter.lock().unwrap() is 2
+      // *arc.lock().unwrap() is ".."
     }
     ```
   ])
@@ -1378,7 +1468,8 @@ image("images/crates.io.png", width: auto)
   #codeblock(width: auto, [
     ```cpp
     void pass_ownership(std::unique_ptr<int> x) {
-      std::cout << "Value in func: " << *x << std::endl;
+      std::cout << "Value in func: "
+                << *x << std::endl;
       // x now owns the data
     }
 
@@ -1410,6 +1501,53 @@ image("images/crates.io.png", width: auto)
   ])
 ]
 
+== returning errors
+
+#columns(2)[
+  #cpp_logo
+  #codeblock(width: auto, size: 0.8em, [
+    ```cpp
+    auto divide_expected(int num, int den)
+             -> std::expected<float, std::string>
+    {
+      if (den == 0) {
+        return std::unexpected("Division by zero");
+      }
+      return float(num) / float(den);
+    }
+
+    float divide_exception(int num, int den)
+    {
+      if (den == 0) {
+        throw std::runtime_error("Division by zero");
+      }
+      return float(num) / float(den);
+    }
+
+    // std::terminate() for the severe errors
+    ```
+  ])
+
+  #colbreak()
+  #rust_logo
+  #codeblock(width: auto, size: 0.8em, [
+    ```rust
+    fn divide_result(num: i32, den: i32)
+              -> Result<f32, String>
+    {
+      if den == 0 {
+        Err(String::from("Division by zero"))
+      }
+      else {
+        Ok(num as f32 / den as f32)
+      }
+    }
+
+    // panic!("...") for the severe errors
+    ```
+  ])
+]
+
 // ------------------------- unique stuff -------------------------
 
 = Features
@@ -1426,7 +1564,11 @@ image("images/crates.io.png", width: auto)
       Write(String),
       ChangeColor(i32, i32, i32),
     }
-
+    ```
+  ])
+  #colbreak()
+  #codeblock(width: auto, size: 0.8em, [
+    ```rust
     fn process_message(msg: Message) {
       match msg {
         Message::Quit => {
@@ -1459,8 +1601,10 @@ image("images/crates.io.png", width: auto)
 #columns(2)[
   #rust_logo
   #codeblock(width: auto, [
-    ```rust
+    ```
     #[derive(Debug)]
+    ```
+    ```rust
     struct Point {
         x: i32,
         y: i32,
@@ -1468,7 +1612,8 @@ image("images/crates.io.png", width: auto)
 
     fn main() {
         let p = Point { x: 10, y: 20 };
-        println!("{:?}", p); // Prints: Point { x: 10, y: 20 }
+        println!("{:?}", p);
+        // Prints: Point { x: 10, y: 20 }
     }
     ```
   ])
@@ -1479,14 +1624,20 @@ image("images/crates.io.png", width: auto)
 #columns(2)[
   #rust_logo
   #codeblock(width: auto, [
-    ```cpp
+    ```
     #[test]
+    ```
+    ```rust
     fn test_my_function_1_2_3() {
         assert_eq!(my_function(1,2,3), 0);
     }
 
+    ```
+    ```
     #[test]
     #[should_panic]
+    ```
+    ```rust
     fn test_my_function_0_0_0() {
         my_function(0,0,0);
     }
