@@ -1,8 +1,4 @@
-//#import "theme/src/lib.typ" as uc
-
 #import "@preview/touying:0.6.1": *
-//#import themes.simple: *
-//#import themes.metropolis: *
 #import themes.stargazer: *
 
 #import "@preview/touying:0.6.1" as ty
@@ -12,26 +8,6 @@
 #set text(font: "Fira Sans", weight: "light")
 #show math.equation: set text(font: "Fira Math")
 
-/*
-#show: uc.ucph-metropolis-theme.with(
-  language: "en",
-  ty.config-info(
-    title: [Rust, first impressions],
-    subtitle: [for this C/C++ coder],
-    author: [Bart Trojanowski],
-    date: datetime.today(),
-    institution: [CppOttawa],
-    logo: emoji.crab,
-  ),
-)
-*/
-/*
-#show: simple-theme.with(
-  aspect-ratio: "16-9",
-  footer: [Simple slides],
-)
-*/
-//#show: metropolis-theme.with(
 #show: stargazer-theme.with(
   aspect-ratio: "16-9",
   footer: self => self.info.institution,
@@ -79,24 +55,6 @@
 // ------------------------- title -------------------------
 
 #title-slide()
-
-// ------------------------- outline -------------------------
-
-/*
-== Contents <touying:hidden>
-
-#show outline.entry: it => link(
-  it.element.location(),
-  it.indented(it.prefix(), it.body()),
-)
-
-#ty.slide[
-  #set align(left)
-  #columns(2)[
-    #outline()
-  ]
-]
-*/
 
 // ------------------------- intro -------------------------
 
@@ -195,7 +153,7 @@
 it's 2010
 - working as contractor
 - invoicing monthly
-- LibreOffice spreadsheets/docs
+- LibreOffice calc/writer
 
 unrelated
 - switched from `bash` to `zsh`
@@ -293,7 +251,7 @@ Output written on bnl-20101103-1.pdf.
   #codeblock(color: green, [
     ```sh
     ❯ cargo build
-    Compiling hello_world v0.1.0 (example1)
+    Compiling hello_world v0.1.0 (hello_world)
      Finished `dev` target(s) in 0.12s
 
     ❯ cargo run
@@ -325,7 +283,7 @@ Output written on bnl-20101103-1.pdf.
   - move semantics
   - no deep copies
   - reference borrowing
-  - dropping 
+  - dropping
 
   It's a bit like *std::uniq_ptr* on all variables... \
   but...
@@ -440,51 +398,129 @@ image("images/crates.io.png", width: auto)
 
 = Comparison
 
+== similarities <touying:hidden>
+
+- blazingly fast
+- memory efficient
+- system language
+- compiled
+- multi-paradigm
+
+- primitive types
+- statically typed
+- implicit type deduction
+
 == defaults
 
-TOOD: static vs pub
-TOOD: const vs mut
+- TODO: static vs pub
+- TODO: const vs mut
+- TODO: return optional, if no semicolon
+
+== integers
+
+- standard types `u32;`
+- type suffixes, like `1f32`;
+
+== casting
+
+- TODO: rust: `let v = sqrt(n) as u32;`
+
+== loops
+
+- TODO: rust: `for i in first..=last { }`
 
 == strings
 
-TODO: const char \*
+- TODO: `const char *`
 
 == strings <touying:hidden>
 
-TODO: std::string
+- TODO: `std::string`
 
 == strings <touying:hidden>
 
-TODO: std::string_view
+- TODO: `std::string_view`
+
+== ownership and borrowing
+
+- TODO: unique_ptr vs Box
+- TODO: shared_ptr vs Rc/Arc (single/multi-threaded)
 
 == containers
 
-TODO: vec vs array
-TODO: iterators
+- TODO: vec vs array
+- TODO: iterators
+
+- `v1 = vec![]; v2 = v1.clone()`
+
+== OOO
+
+- TODO: class vs struct/impl
 
 == polymorphism
 
-TODO: subclasses vs interfaces
+- pure virtual interfaces vs traits
+- inheritance vs trait inheritance
 
-== generics
+== templates/generics
 
-TODO: ...
+- meta programming
+- c++ ducktyping w/ concepts
+
+- TODO: ...
+
+== enums
+
+== unions
+
+- typed enumerations
+
+== ownership
+
+- c++
+  - single owner or shared ownership
+  - dev managed
+  - copy by default, move explicitly
+- rust
+  - single owner
+  - borrow checker
+  - move/borrow ownership by default, copy explicitly
+
+== concurrency
+
+- TODO: threads
+
+== locking
+
+- TODO: c++ mutex disjoint from data
+- TODO: rust mutex lock().unwrap() to access data atomically
+
+== parameter passing
+
+- TODO: show passing by value, by move, by const reference, mutable reference
+
 
 // ------------------------- unique stuff -------------------------
 
 = Features
 
-== matching
+== pattern matching
 
-foo
+- TODO alternative to switch
+- TODO match typed enumerations
 
-== bar
+== attributes
 
-bar
+- TODO custom attributes vs traits
 
 // ------------------------- takeaways -------------------------
 
 = Takeaways
+
+== keep things short
+
+- keywords as short as possible (`fn`, `str`)
+- return is optional; last element is returned
 
 == foo
 
