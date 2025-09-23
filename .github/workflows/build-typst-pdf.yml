@@ -26,6 +26,15 @@ jobs:
           sudo cp firasans-temp/*/ofl/firasans/*.ttf /usr/share/fonts/truetype/fira-sans/
           rm -rf firasans-temp fira-sans.zip
           #
+          # Install Fira Code from Google Fonts
+          # https://www.nerdfonts.com/font-downloads
+          #
+          wget -qO fira-code.zip https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/FiraCode.zip
+          unzip -q fira-code.zip -d firacode-temp
+          sudo mkdir -p /usr/share/fonts/truetype/fira-code
+          sudo cp firacode-temp/*.ttf /usr/share/fonts/truetype/fira-code/
+          rm -rf firacode-temp fira-code.zip
+          #
           # Install Fira Math from GitHub
           # https://github.com/firamath/firamath/releases
           #
