@@ -45,10 +45,10 @@ jobs:
         run: typst fonts
 
       - name: Compile Typst to PDF
-        run: typst compile main.typ main.pdf
+        run: typst compile main.typ rust-1st-impressions.pdf
 
       - name: Upload PDF artifact
         uses: actions/upload-artifact@v4
         with:
-          name: typst-pdf
-          path: main.pdf
+          name: rust-1st-impressions-pdf
+          path: rust-1st-impressions.pdf
