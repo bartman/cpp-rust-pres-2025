@@ -94,7 +94,7 @@
 #page(
   background: image("images/crab-rust-first-impressions-5.png", width: 100%, height: 100%, fit: "cover"),
 )[
-    #set text(size: 1.8em, weight: "bold", fill: rgb("#CE822B"), stroke: rgb("#CE422B"))
+    #set text(size: 1.8em, weight: "bold", fill: rgb("#CEa22B"), stroke: rgb("#CE422B"))
     #place(top, dy: 90%)[
         #box(width: 100%, align(center, subtitle))
     ]
