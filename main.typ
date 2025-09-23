@@ -8,12 +8,15 @@
 #set text(font: "Fira Sans", weight: "light")
 #show math.equation: set text(font: "Fira Math")
 
+#let title = [Rust, first impressions]
+#let subtitle = [for this C/C++ veteran]
+
 #show: stargazer-theme.with(
   aspect-ratio: "16-9",
   footer: self => self.info.institution,
   config-info(
-    title: [Rust, first impressions],
-    subtitle: [for this C/C++ coder],
+    title: title,
+    subtitle: subtitle,
     author: [Bart Trojanowski],
     date: datetime.today(),
     institution: [CppOttawa],
@@ -87,7 +90,15 @@
 
 // ------------------------- title -------------------------
 
-#title-slide()
+//#title-slide()
+#page(
+  background: image("images/crab-rust-first-impressions-5.png", width: 100%, height: 100%, fit: "cover"),
+)[
+    #set text(size: 1.8em, weight: "bold", fill: rgb("#CE822B"), stroke: rgb("#CE422B"))
+    #place(top, dy: 90%)[
+        #box(width: 100%, align(center, subtitle))
+    ]
+]
 
 // ------------------------- intro -------------------------
 
