@@ -37,16 +37,46 @@
   width: 100%,
   color: rgb(255, 255, 192),               // text color
   size: 1em,                               // text size
+  line-numbers: false,                     // new param, off by default
   body
 ) = {
-  show raw: set text(fill: color, size: size)
+  let the_raw = none
+  if body.func() == raw {
+    the_raw = body
+  } else if body.has("children") {
+    the_raw = body.children.find(c => c.func() == raw)
+  }
+
+  let content = if line-numbers and the_raw != none {
+    let lines = the_raw.text.split("\n")
+    let num_lines = lines.len()
+    let lang = the_raw.lang
+    if num_lines > 0 {
+      grid(
+        columns: (auto, 1fr),
+        align: (right + horizon, left + horizon),
+        gutter: 0.5em,
+        ..array.zip(
+          range(1, num_lines + 1).map(n => text(fill: luma(70%), str(n))),
+          lines.map(line => raw(line, lang: lang, block: false))
+        ).flatten()
+      )
+    } else {
+      body
+    }
+  } else {
+    body
+  }
   block(
     fill: fill,
     stroke: stroke,
     radius: radius,
     inset: inset,
     width: width,
-    body
+    {
+      show raw: set text(fill: color, size: size)
+      content
+    }
   )
 }
 
@@ -265,16 +295,18 @@ unrelated
     ❯ target/debug/hello_world
     Hello, world!
 
-    ❯ ls -l target/debug/hello_world
-    .rwxr-xr-x 510k bart  9 Aug 12:00  ...
+    ❯ ls -l target/*/hello_world
+    .rwxr-xr-x 500k bart  9 Aug 12:00  rel
+    .rwxr-xr-x 510k bart  9 Aug 12:00  dbg
     ```
   ])
 
   #codeblock(color: gray, [
     ```
-    ❯ ls -l hello-c hello-cpp
-    .rwxr-xr-x  17k bart  9 Aug 12:01  c
-    .rwxr-xr-x  35k bart  9 Aug 12:02  cpp
+    .rwxr-xr-x  16k bart  9 Aug 12:01  c
+    .rwxr-xr-x  16k bart  9 Aug 12:01  cpp
+    .rwxr-xr-x  17k bart  9 Aug 12:01  c+dbg
+    .rwxr-xr-x  35k bart  9 Aug 12:01  cpp+dbg
     ```
   ])
 
@@ -323,10 +355,10 @@ unrelated
 
 #columns(2)[
 
-  #codeblock([
+  #codeblock(line-numbers: true, [
     ```rust
-    fn thief(s: String) {
-        println!("thief: {}", s);
+    fn thief(t: String) {
+        println!("thief: {}", t);
     }
 
     fn main() {
@@ -349,14 +381,14 @@ unrelated
     ```
     src/main.rs|13 col 28 error 382| borrow of moved value: `s`
     ||    |
-    || 7  |     let s = String::from("hello");
+    || 6  |     let s = String::from("hello");
     ||    |         - move occurs because `s` has type `String`,
     ||    |           which does not implement the `Copy` trait
     || ...
     || 11 |     thief(s);
     ||    |           - value moved here
     || ...
-    || 13 |     println!("after: {}", s);
+    || 14 |     println!("after: {}", s);
     ||    |                            ^ value borrowed here
     ||    |                              after move
     ```
@@ -678,13 +710,13 @@ image("images/crates.io.png", width: auto)
     // Implicit promotion (type mismatch error)
     let i: i32 = 10;
     let d: f64 = 3.14;
-    // let result = i + d; // Compile error: cannot add `f64` to `i32`
+    // let result = i + d; // Error: cannot add f64 & i32
     let result = i as f64 + d; // Explicit cast required
 
     // Narrowing conversion (explicit cast required)
-    let big_int: i32 = 1000;
-    // let small_char: u8 = big_int; // Compile error: mismatched types
-    let small_char: u8 = big_int as u8; // Explicit cast, potential data loss
+    let big: i32 = 1000;
+    // let small: u8 = big; // Error: mismatched types
+    let small: u8 = big as u8; // Explicit cast
     ```
   ])
 ]
@@ -693,7 +725,7 @@ image("images/crates.io.png", width: auto)
 
 #columns(2)[
   #cpp_logo
-  #codeblock(width: auto, [
+  #codeblock(width: auto, size: 0.9em, [
     ```cpp
     for (auto i = 0; i < 10; i++) {
       // ...
@@ -702,12 +734,21 @@ image("images/crates.io.png", width: auto)
     for (auto i = 0; i < 10; i += 2) {
       // ...
     }
+
+    while (count < 10) {
+      // ...
+      count ++;
+    }
+
+    do {
+      // ...
+    } while (something());
     ```
   ])
 
   #colbreak()
   #rust_logo
-  #codeblock(width: auto, [
+  #codeblock(width: auto, size: 0.9em, [
     ```rust
     for i in 0..10 {
       // ...
@@ -715,6 +756,16 @@ image("images/crates.io.png", width: auto)
 
     for i in (0..10).step_by(2) {
       // ...
+    }
+
+    while count < 10 {
+      // ...
+      count += 1;
+    }
+
+    loop {
+      // ...
+      if something() { break; }
     }
     ```
   ])
@@ -829,18 +880,19 @@ image("images/crates.io.png", width: auto)
   - move/borrow ownership by default, copy explicitly
   ]
 
-== ownership
+== smart pointer
 
 #columns(2)[
   #cpp_logo
   #codeblock(width: auto, [
     ```cpp
-    int main() {
+    std::uniq_ptr<int> get_unique_five() {
       // Unique ownership
       auto p1 = std::make_unique<int>(5);
       // Transfer ownership
       auto p2 = std::move(p1);
       // p1 is now nullptr
+      return p2;
     }
     ```
   ])
@@ -849,18 +901,19 @@ image("images/crates.io.png", width: auto)
   #rust_logo
   #codeblock(width: auto, [
     ```rust
-    fn main() {
+    fn get_boxed_five() -> Box<i32> {
       // Unique ownership
       let b1 = Box::new(5);
       // Transfer ownership
       let b2 = b1;
       // b1 is moved and cannot be used
+      b2
     }
     ```
   ])
 ]
 
-== ownership <touying:hidden>
+== smart pointer <touying:hidden>
 
 #columns(2)[
   #cpp_logo
@@ -868,12 +921,13 @@ image("images/crates.io.png", width: auto)
     ```cpp
     #include <memory>
 
-    int main() {
+    std::shared_ptr<int> get_sharable_five() {
       // Shared ownership
       auto sp1 = std::make_shared<int>(5);
       // Create another reference
       auto sp2 = sp1;
       // Ref count is 2
+      return sp2; // or sp1
     }
     ```
   ])
@@ -884,22 +938,23 @@ image("images/crates.io.png", width: auto)
     ```rust
     use std::rc::Rc;
 
-    fn main() {
+    fn get_refcnted_five() -> Rc<i32> {
       // Shared ownership (not thread-safe)
       let rc1 = Rc::new(5);
       // Create another reference
       let rc2 = Rc::clone(&rc1);
       // Ref count is 2
+      rc2 // or rc1
     }
     ```
   ])
 ]
 
-== ownership <touying:hidden>
+== smart pointer <touying:hidden>
 
 #columns(2)[
   #cpp_logo
-  #codeblock(width: auto, [
+  #codeblock(width: auto, size: 0.8em, [
     ```cpp
     #include <memory>
     #include <thread>
@@ -1022,6 +1077,9 @@ image("images/crates.io.png", width: auto)
   #rust_logo
   #codeblock(width: auto, [
     ```rust
+    // vec is built in
+    // and so are algorithms
+
     let v = vec![1, 2, 3];
 
     // Manual sum
@@ -1036,15 +1094,15 @@ image("images/crates.io.png", width: auto)
   ])
 ]
 
-== OOO
+== OOP
 
 #columns(2)[
   #cpp_logo
   #codeblock(width: auto, size: 0.8em, [
     ```cpp
     class Point {
-    public:
       float x, y;
+    public:
       explicit Point(float x, float y)
         : x(x), y(y) {}
 
@@ -1099,8 +1157,8 @@ image("images/crates.io.png", width: auto)
     };
 
     class Circle : public Shape {
-    public:
       float r;
+    public:
       Circle(float r) : r(r) {}
       float area() const override {
         return std::numbers::pi * r * r;
@@ -1294,13 +1352,13 @@ image("images/crates.io.png", width: auto)
       std::mutex mtx;
       std::string str;
 
-      auto increment = [&]() {
+      auto append_dot = [&]() {
         std::lock_guard<std::mutex> lock(mtx);
         str += ".";
       };
 
-      std::thread t1(increment);
-      std::thread t2(increment);
+      std::thread t1(append_dot);
+      std::thread t2(append_dot);
       t1.join();
       t2.join();
       std::cout << str; // ".."
@@ -1313,7 +1371,7 @@ image("images/crates.io.png", width: auto)
   #rust_logo
   #codeblock(width: auto, size: 0.8em, [
     ```rust
-    fn increment_counter(arc: Arc<Mutex<String>>) {
+    fn append_dot(arc: Arc<Mutex<String>>) {
       let mut str = arc.lock().unwrap();
       *str += "."
     }
@@ -1324,10 +1382,10 @@ image("images/crates.io.png", width: auto)
       let clone2 = Arc::clone(&arc);
 
       let handle1 = thread::spawn(move || {
-        increment_counter(clone1); });
+        append_dot(clone1); });
 
       let handle2 = thread::spawn(move || {
-        increment_counter(clone2); });
+        append_dot(clone2); });
 
       handle1.join().unwrap();
       handle2.join().unwrap();
@@ -1465,16 +1523,15 @@ image("images/crates.io.png", width: auto)
 
 #columns(2)[
   #cpp_logo
-  #codeblock(width: auto, [
+  #codeblock(width: auto, size: 0.8em, [
     ```cpp
-    void pass_ownership(std::unique_ptr<int> x) {
-      std::cout << "Value in func: "
-                << *x << std::endl;
+    void pass_ownership(std::unique_ptr<std::string> x) {
+      fmt::println("Value in func: {}", x);
       // x now owns the data
     }
 
     int main() {
-      auto p = std::make_unique<int>(5);
+      auto p = std::make_unique<std::string>("hello");
       pass_ownership(std::move(p));
       // p is now nullptr (ownership transferred)
       // std::cout << *p; // Error: p is nullptr
@@ -1484,7 +1541,7 @@ image("images/crates.io.png", width: auto)
 
   #colbreak()
   #rust_logo
-  #codeblock(width: auto, [
+  #codeblock(width: auto, size: 0.8em, [
     ```rust
     fn pass_ownership(x: String) {
       println!("Value in func: {}", x);
@@ -1495,7 +1552,7 @@ image("images/crates.io.png", width: auto)
       let s = String::from("hello");
       pass_ownership(s);
       // s is moved and cannot be used here
-      // println!("{}", s); // Error: value borrowed here after move
+      // println!("{}", s); // Error: borrow after move
     }
     ```
   ])
@@ -1554,18 +1611,36 @@ image("images/crates.io.png", width: auto)
 
 == pattern matching
 
+#rust_logo
 #columns(2)[
-  #rust_logo
   #codeblock(width: auto, size: 0.8em, [
     ```rust
     enum Message {
       Quit,
       Move { x: i32, y: i32 },
       Write(String),
-      ChangeColor(i32, i32, i32),
+      Color(i32, i32, i32),
+    }
+    ```
+
+  ])
+
+  - `Quit` is a _unit variant_
+  - `Move` is a _struct variant_
+  - `Write` is a _tuple variant_ with 1 field
+  - `Color` is a _tuple variant_ with 3 fields
+
+  #codeblock(width: auto, size: 0.8em, [
+    ```rust
+    fn main() {
+      let msg1 = Message::Move { x: 10, y: 20 };
+      process_message(msg1);
+      let msg2 = Message::Write(String::from("hello"));
+      process_message(msg2);
     }
     ```
   ])
+
   #colbreak()
   #codeblock(width: auto, size: 0.8em, [
     ```rust
@@ -1580,17 +1655,10 @@ image("images/crates.io.png", width: auto)
         Message::Write(text) => {
           println!("Text={}", text);
         }
-        Message::ChangeColor(r, g, b) => {
+        Message::Color(r, g, b) => {
           println!("r,g,b={},{},{}", r, g, b);
         }
       }
-    }
-
-    fn main() {
-      let msg1 = Message::Move { x: 10, y: 20 };
-      process_message(msg1);
-      let msg2 = Message::Write(String::from("hello"));
-      process_message(msg2);
     }
     ```
   ])
@@ -1598,8 +1666,8 @@ image("images/crates.io.png", width: auto)
 
 == attributes
 
+#rust_logo
 #columns(2)[
-  #rust_logo
   #codeblock(width: auto, [
     ```
     #[derive(Debug)]
@@ -1617,6 +1685,17 @@ image("images/crates.io.png", width: auto)
     }
     ```
   ])
+
+  #colbreak()
+  - `#[inline(always)]`
+  - `#[cold]`
+  - `#[deprecated]`
+  - `#[must_use]`
+  - `#[track_caller]`
+  - `#[allow(...)]`
+  - `#[warn(...)]`
+  - `#[deny(...)]`
+  - `#[cfg(feature = "avx512")]`
 ]
 
 == attributes <touying:hidden>
@@ -1653,6 +1732,7 @@ image("images/crates.io.png", width: auto)
 
   https://github.com/bartman/clinvoice-rs
 
+- \~30 hours of learning and coding
 - \~2k lines of `rust` \
   (4x the `zsh` version, but has more features, and it's easy on the eyes)
 - AI generated unit tests
