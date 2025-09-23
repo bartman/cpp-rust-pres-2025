@@ -4,6 +4,10 @@ This is a presentation I did on my first impressions of the Rust 🦀
 programming language, as a veteran C/C++ systems programmer, for my
 local C++ meetup group.
 
+PDFs available in [release section](https://github.com/bartman/cpp-rust-pres-2025/releases).
+
+## building
+
 This presentation is done in [Typst](https://typst.app/docs/) markup language.
 
 To build this presentation you can [install typst](https://github.com/typst/typst?tab=readme-ov-file#installation)
