@@ -12,21 +12,30 @@ jobs:
 
       - name: Install Fira Sans and Fira Math fonts
         run: |
+          set +x
+          #
           sudo apt-get update
           sudo apt-get install -y wget unzip fontconfig
+          #
           # Install Fira Sans from Google Fonts
+          # https://github.com/google/fonts
+          #
           wget -qO fira-sans.zip https://github.com/google/fonts/archive/refs/heads/main.zip
           unzip -q fira-sans.zip '*/ofl/firasans/*' -d firasans-temp
           sudo mkdir -p /usr/share/fonts/truetype/fira-sans
-          sudo cp firasans-temp/*/ofl/firasans/*.otf /usr/share/fonts/truetype/fira-sans/
+          sudo cp firasans-temp/*/ofl/firasans/*.ttf /usr/share/fonts/truetype/fira-sans/
           rm -rf firasans-temp fira-sans.zip
+          #
           # Install Fira Math from GitHub
-          wget -q https://github.com/firamath/firamath/releases/latest/download/firamath-otf.zip
-          unzip -q firamath-otf.zip -d firamath-temp
+          # https://github.com/firamath/firamath/releases
+          #
+          wget -qO FiraMath-Regular.otf https://github.com/firamath/firamath/releases/download/v0.3.4/FiraMath-Regular.otf
           sudo mkdir -p /usr/share/fonts/truetype/fira-math
-          sudo cp firamath-temp/*.otf /usr/share/fonts/truetype/fira-math/
-          rm -rf firamath-temp firamath-otf.zip
+          sudo cp FiraMath-Regular.otf /usr/share/fonts/truetype/fira-math/
+          rm -rf FiraMath-Regular.otf
+          #
           # Refresh font cache
+          #
           sudo fc-cache -fv
 
       - name: Setup Typst
