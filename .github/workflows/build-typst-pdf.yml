@@ -32,6 +32,9 @@ jobs:
       - name: Setup Typst
         uses: typst-community/setup-typst@v4
 
+      - name: Font check
+        run: typst fonts
+
       - name: Compile Typst to PDF
         run: typst compile main.typ main.pdf
 
