@@ -20,4 +20,6 @@ fn main() {
             false
         }
     };
+
+    println!("{} {}", number, matched);
 }

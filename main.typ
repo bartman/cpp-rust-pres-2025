@@ -516,7 +516,7 @@ image("images/crates.io.png", width: auto)
   ])
 ]
 
-== defaults <touying:hidden>
+== returning
 
 #columns(2)[
   #cpp_logo
