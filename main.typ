@@ -1685,7 +1685,7 @@ image("images/crates.io.png", width: auto)
 
 #rust_logo
 #columns(2)[
-  #codeblock(width: auto, size: 0.8em, [
+  #codeblock(width: auto, size: 0.7em, [
     ```rust
     enum Message {
       Quit,
@@ -1702,19 +1702,21 @@ image("images/crates.io.png", width: auto)
   - `Write` is a _tuple variant_ with 1 field
   - `Color` is a _tuple variant_ with 3 fields
 
-  #codeblock(width: auto, size: 0.8em, [
+  #codeblock(width: auto, size: 0.7em, [
     ```rust
     fn main() {
       let msg1 = Message::Move { x: 10, y: 20 };
       process_message(msg1);
       let msg2 = Message::Write(String::from("hello"));
       process_message(msg2);
+      let msg3 = Message::Color(255,255,255);
+      process_color(msg3);
     }
     ```
   ])
 
   #colbreak()
-  #codeblock(width: auto, size: 0.8em, [
+  #codeblock(width: auto, size: 0.7em, [
     ```rust
     fn process_message(msg: Message) {
       match msg {
@@ -1731,6 +1733,15 @@ image("images/crates.io.png", width: auto)
           println!("r,g,b={},{},{}", r, g, b);
         }
       }
+    }
+    ```
+  ])
+  #codeblock(width: auto, size: 0.7em, [
+    ```rust
+    fn process_color(msg: Message) {
+        if let Message::Color(r,g,b) = msg {
+            println!("Color {},{},{}", r, g, b);
+        }
     }
     ```
   ])
