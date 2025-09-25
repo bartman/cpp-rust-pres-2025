@@ -10,7 +10,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install Fira Sans and Fira Math fonts
+      - name: Install Fira Sans, Fira Code, and Fira Math fonts
         run: |
           set +x
           #

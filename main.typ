@@ -732,6 +732,63 @@ image("images/crates.io.png", width: auto)
   ])
 ]
 
+== conditions
+
+#columns(2)[
+  #cpp_logo
+  #codeblock(width: auto, size: 0.9em, [
+    ```cpp
+    auto number = 42;
+
+    if (number == 42) {
+        fmt::println("equal");
+    } else if (number < 0) {
+        fmt::println("less");
+    } else {
+        fmt::println("?");
+    }
+
+    bool matched = false;
+    switch (number) {
+        case 42:
+            fmt::println("universe");
+            matched = true;
+            break;
+        default:
+            fmt::println("something else");
+            break;
+    }
+    ```
+  ])
+
+  #colbreak()
+  #rust_logo
+  #codeblock(width: auto, size: 0.9em, [
+    ```rust
+    let number = 42;
+
+    if number == 42 {
+        println!("equal");
+    } else if number < 0 {
+        println!("less");
+    } else {
+        println!("?");
+    }
+
+    let matched = match number {
+        42 => {
+            println!("universe");
+            true
+        },
+        _ => {
+            println!("something else");
+            false
+        }
+    };
+    ```
+  ])
+]
+
 == loops
 
 #columns(2)[
