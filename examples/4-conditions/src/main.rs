@@ -21,5 +21,7 @@ fn main() {
         }
     };
 
-    println!("{} {}", number, matched);
+    let msg = if matched { "matched" } else { "nope" };
+
+    println!("{} {} {}", number, matched, msg);
 }

@@ -736,7 +736,7 @@ image("images/crates.io.png", width: auto)
 
 #columns(2)[
   #cpp_logo
-  #codeblock(width: auto, size: 0.9em, [
+  #codeblock(width: auto, size: 0.8em, [
     ```cpp
     auto number = 42;
 
@@ -758,12 +758,14 @@ image("images/crates.io.png", width: auto)
             fmt::println("something else");
             break;
     }
+
+    auto msg = matched ? "matched" : "nope";
     ```
   ])
 
   #colbreak()
   #rust_logo
-  #codeblock(width: auto, size: 0.9em, [
+  #codeblock(width: auto, size: 0.8em, [
     ```rust
     let number = 42;
 
@@ -785,6 +787,8 @@ image("images/crates.io.png", width: auto)
             false
         }
     };
+
+    let msg = if matched { "matched" } else { "nope" };
     ```
   ])
 ]
